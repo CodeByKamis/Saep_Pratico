@@ -1,17 +1,17 @@
+# backend/api/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProductViewSet, StockMovementViewSet, MyTokenObtainPairView
+from .views import ProdutoViewSet, MovimentacaoViewSet, login_usuario
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
-router.register(r'products', ProductViewSet)
-router.register(r'movements', StockMovementViewSet)
+router.register(r'products', ProdutoViewSet, basename='products')
+router.register(r'movements', MovimentacaoViewSet, basename='movements')
 
 urlpatterns = [
-    # JWT
-    path('auth/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # rota de login personalizada (usa tabela usuarios)
+    path('auth/token/', login_usuario, name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # Rotas da API
     path('', include(router.urls)),
 ]

@@ -1,3 +1,4 @@
+# backend/api/permissions.py
 from rest_framework.permissions import BasePermission
 
 class IsAdminOrReadOnly(BasePermission):

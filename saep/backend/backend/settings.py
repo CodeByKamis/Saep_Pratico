@@ -26,12 +26,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    # Terceiros
+    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
-
-    # Sua API
     "api",
 ]
 
@@ -40,13 +37,19 @@ INSTALLED_APPS = [
 # ===========================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+
+
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "backend.urls"
 
@@ -75,28 +78,17 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # ===========================
 DB_ENGINE = os.environ.get("DB_ENGINE", "mysql").lower()
 
-if DB_ENGINE == "sqlite":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'saep_db',          # conforme requisito
+        'USER': 'root',
+        'PASSWORD': 'senai',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": os.environ.get("MYSQL_DATABASE", "saep_db"),
-            "USER": os.environ.get("MYSQL_USER", "saep_user"),
-            "PASSWORD": os.environ.get("MYSQL_PASSWORD", "S3nh4F0rt3"),
-            "HOST": os.environ.get("MYSQL_HOST", "localhost"),
-            "PORT": os.environ.get("MYSQL_PORT", "3306"),
-            "OPTIONS": {
-                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-                "charset": "utf8mb4",
-            },
-        }
-    }
+}
 
 # ===========================
 #  PASSWORD VALIDATION
@@ -141,3 +133,4 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+

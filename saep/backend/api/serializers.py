@@ -1,28 +1,31 @@
+# backend/api/serializers.py
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import Product, StockMovement
+from .models import Usuario, Produto, Movimentacao
 
-
-class UserSerializer(serializers.ModelSerializer):
+class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id','username','first_name','last_name','email']
+        model = Usuario
+        fields = ['id_usuario', 'nome', 'login']
+        read_only_fields = ['id_usuario']
 
-class ProductSerializer(serializers.ModelSerializer):
+
+class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
-        fields = ['id','sku','name','description','quantity','minimum_quantity','created_at']
+        model = Produto
+        fields = ['id_produto', 'nome', 'descricao', 'estoque_atual', 'estoque_min']
+        read_only_fields = ['id_produto']
 
-class StockMovementSerializer(serializers.ModelSerializer):
-    responsible = UserSerializer(read_only=True)
-    product_name = serializers.CharField(source='product.name', read_only=True)
+
+class MovimentacaoSerializer(serializers.ModelSerializer):
+    produto_nome = serializers.CharField(source='id_produto.nome', read_only=True)
+    usuario_nome = serializers.CharField(source='id_usuario.nome', read_only=True)
 
     class Meta:
-        model = StockMovement
-        fields = ['id','product','product_name','movement_type','quantity','responsible','comment','created_at']
-        read_only_fields = ['responsible','created_at','product_name']
-
-alert_low_stock = serializers.SerializerMethodField()
-
-def get_alert_low_stock(self, obj):
-    return obj.quantity < obj.minimum_quantity
+        model = Movimentacao
+        fields = [
+            'id_movimentacao',
+            'id_produto', 'produto_nome',
+            'id_usuario', 'usuario_nome',
+            'tipo', 'quantidade', 'data_movimentacao'
+        ]
+        read_only_fields = ['id_movimentacao', 'produto_nome', 'usuario_nome']

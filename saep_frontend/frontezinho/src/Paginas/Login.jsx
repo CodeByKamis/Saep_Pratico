@@ -1,4 +1,4 @@
-// src/Paginas/Login.jsx
+//tela inicial do projeto para login
 import React, { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
@@ -13,17 +13,17 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-
+  
     try {
       const res = await api.post("/auth/token/", { username, password });
-
+  
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-
-      navigate("/dashboard");
+  
+      navigate("/dashboard", { replace: true });
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.detail) {
+      if (err.response?.data?.detail) {
         setError(err.response.data.detail);
       } else if (err.response) {
         setError("Usuário ou senha incorretos.");

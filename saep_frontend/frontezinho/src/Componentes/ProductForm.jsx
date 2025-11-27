@@ -1,44 +1,49 @@
-import React, {useState} from 'react'
+// src/Componentes/ProductForm.jsx
+import React, { useState, useEffect } from 'react'
 import api from '../api'
 
-export default function ProductForm({product, onDone, onCancel}){
-  const [sku,setSku] = useState(product.sku||'')
-  const [name,setName] = useState(product.name||'')
-  const [description,setDescription] = useState(product.description||'')
-  const [quantity,setQuantity] = useState(product.quantity||0)
-  const [minimum,setMinimum] = useState(product.minimum_quantity||0)
-  const [error,setError] = useState(null)
+export default function ProductForm({ initial = null, onSaved }) {
+  const [form, setForm] = useState({
+    nome: '', descricao: '', estoque_atual: 0, estoque_min: 0
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  async function handleSubmit(e){
+  useEffect(() => {
+    if (initial) setForm({
+      nome: initial.nome || '',
+      descricao: initial.descricao || '',
+      estoque_atual: initial.estoque_atual ?? 0,
+      estoque_min: initial.estoque_min ?? 0
+    })
+  }, [initial])
+
+  async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
-    if(!sku || !name) { setError('SKU e Nome são obrigatórios'); return }
-    const payload = {sku,name,description,quantity:parseInt(quantity,10),minimum_quantity:parseInt(minimum,10)}
-    try{
-      if(product.id){
-        await api.put(`/products/${product.id}/`, payload)
+    setLoading(true)
+    try {
+      if (initial && initial.id_produto) {
+        await api.put(`/products/${initial.id_produto}/`, form)
       } else {
-        await api.post('/products/', payload)
+        await api.post('/products/', form)
       }
-      onDone && onDone()
-    } catch(err){
-      setError(err.response?.data || 'Erro ao salvar')
+      onSaved && onSaved()
+    } catch (err) {
+      setError(err.response?.data || 'Erro')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div style={{border:'1px solid #ccc', padding:10, marginTop:10}}>
-      <h3>{product.id ? 'Editar' : 'Novo'} Produto</h3>
-      {error && <div style={{color:'red'}}>{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div><label>SKU</label><br/><input value={sku} onChange={e=>setSku(e.target.value)} /></div>
-        <div><label>Nome</label><br/><input value={name} onChange={e=>setName(e.target.value)} /></div>
-        <div><label>Descrição</label><br/><textarea value={description} onChange={e=>setDescription(e.target.value)} /></div>
-        <div><label>Quantidade</label><br/><input type="number" value={quantity} onChange={e=>setQuantity(e.target.value)} /></div>
-        <div><label>Quantidade Mínima</label><br/><input type="number" value={minimum} onChange={e=>setMinimum(e.target.value)} /></div>
-        <button type="submit">Salvar</button>
-        <button type="button" onClick={onCancel}>Cancelar</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
+      <input placeholder="Nome" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} required />
+      <textarea placeholder="Descrição" value={form.descricao} onChange={e => setForm({...form, descricao: e.target.value})} />
+      <input type="number" placeholder="Estoque atual" value={form.estoque_atual} onChange={e => setForm({...form, estoque_atual: Number(e.target.value)})} />
+      <input type="number" placeholder="Estoque mínimo" value={form.estoque_min} onChange={e => setForm({...form, estoque_min: Number(e.target.value)})} />
+      <button type="submit" disabled={loading}>{loading ? 'Salvando...' : 'Salvar'}</button>
+      {error && <div style={{ color: 'crimson' }}>{JSON.stringify(error)}</div>}
+    </form>
   )
 }

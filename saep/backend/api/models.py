@@ -5,14 +5,11 @@ class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True, db_column='id_usuario')
     nome = models.CharField(max_length=150, db_column='nome')
     login = models.CharField(max_length=80, unique=True, db_column='login')
-    senha = models.CharField(max_length=255, db_column='senha')  
+    senha = models.CharField(max_length=255, db_column='senha')
+    ativo = models.BooleanField(default=True, db_column='ativo') # campo adicionado
 
     class Meta:
-        db_table = 'usuarios'  # Nome da tabela no banco de dados
-        # managed=True é padrão e garante que o Django crie as tabelas automaticamente
-
-    def __str__(self):
-        return self.nome
+        db_table = 'usuarios'
 
 
 class Produto(models.Model):
@@ -32,25 +29,26 @@ class Produto(models.Model):
 
 class Movimentacao(models.Model):
     id_movimentacao = models.AutoField(primary_key=True, db_column='id_movimentacao')
+
     id_produto = models.ForeignKey(
         Produto,
         on_delete=models.RESTRICT,
         db_column='id_produto',
         related_name='movimentacoes'
     )
+
     id_usuario = models.ForeignKey(
         Usuario,
         on_delete=models.RESTRICT,
         db_column='id_usuario',
         related_name='movimentacoes'
     )
-    tipo = models.CharField(max_length=10, db_column='tipo')  # 'entrada' ou 'saida'
+
+    tipo = models.CharField(max_length=10, db_column='tipo')
     quantidade = models.IntegerField(db_column='quantidade')
     data_movimentacao = models.DateField(db_column='data_movimentacao')
 
     class Meta:
-        db_table = 'movimentacoes'  # Nome da tabela no banco de dados
-        ordering = ["-data_movimentacao"]  # Ordena pela data de movimentação (mais recentes primeiro)
+        db_table = 'movimentacoes'
+        ordering = ["-data_movimentacao"]
 
-    def __str__(self):
-        return f"{self.tipo} - {self.id_produto.nome} - {self.quantidade}"

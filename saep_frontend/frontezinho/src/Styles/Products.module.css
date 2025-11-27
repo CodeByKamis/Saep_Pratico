@@ -1,0 +1,96 @@
+/* estilização da pagina Products */
+
+.container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  h1 {
+    margin-bottom: 16px;
+    color: #111827;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  
+  .searchForm {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    gap: 8px;
+  }
+  
+  .searchInput {
+    width: 400px; /* mais largo */
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+  }
+  
+  .searchButton {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .searchButton:hover {
+    background: #1e40af;
+  }
+  
+  .adicionar {
+    margin-bottom: 16px;
+    display: flex;
+  }
+  
+  button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  
+  button:hover {
+    background: #1e40af;
+  }
+  
+  .formWrapper {
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 6px;
+    background: #f9fafb;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #f3f4f6;
+  }
+  
+  .table tr:nth-child(even) {
+    background-color: #f9fafb;
+  }
+  
+  .table tr:hover {
+    background-color: #e0e7ff;
+  }
+  

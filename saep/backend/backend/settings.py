@@ -81,9 +81,9 @@ DB_ENGINE = os.environ.get("DB_ENGINE", "mysql").lower()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'saep_db',          # conforme requisito
+        'NAME': 'saep_db',#saep_db     # conforme requisito
         'USER': 'root',
-        'PASSWORD': 'senai',
+        'PASSWORD': 'kamila123',#senai
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},

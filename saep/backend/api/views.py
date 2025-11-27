@@ -94,13 +94,13 @@ class ProdutoViewSet(viewsets.ModelViewSet):
 # MOVIMENTAÇÕES (atualiza estoque)
 # ---------------------------
 class MovimentacaoViewSet(viewsets.ModelViewSet):
-    queryset = Movimentacao.objects.select_related('produto', 'usuario').all()
+    # use os nomes reais dos campos do model
+    queryset = Movimentacao.objects.select_related('id_produto', 'id_usuario').all()
     serializer_class = MovimentacaoSerializer
 
     def perform_create(self, serializer):
         mov = serializer.save()
-        produto = mov.produto
-        # atualiza estoque conforme tipo
+        produto = mov.id_produto  # observe: id_produto é FK para Produto
         if mov.tipo == 'entrada':
             produto.estoque_atual = produto.estoque_atual + mov.quantidade
         else:

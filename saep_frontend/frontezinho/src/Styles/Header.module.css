@@ -1,0 +1,57 @@
+/* estilização do componente Header */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2563eb;
+    color: white;
+    padding: 12px 24px;
+    font-family: 'Baloo 2', sans-serif;
+  }
+  
+  .logo {
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+  
+  .nav a {
+    color: white;
+    text-decoration: none;
+    margin-right: 16px;
+    font-weight: 500;
+  }
+  
+  .nav a:hover {
+    text-decoration: underline;
+  }
+  
+  .nav .active {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+  
+  .logout {
+    background: #ef4444;
+    border: none;
+    padding: 6px 12px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .logout:hover {
+    background: #b91c1c;
+  }
+  
+    .nome {
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: bold;
+    font-size: 19px;
+    margin-left: 180px;
+  }

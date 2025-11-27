@@ -1,75 +1,98 @@
-import React, {useState, useEffect} from 'react'
-import api from '../api'
-import ProductForm from '../Componentes/ProductForm'
+// src/Paginas/Products.jsx
+import React, { useEffect, useState } from 'react';
+import api from '../api';
+import ProductForm from '../Componentes/ProductForm';
+import Header from '../Componentes/Header';
+import styles from '../Styles/Products.module.css';
 
-export default function Products(){
-  const [products,setProducts] = useState([])
-  const [query,setQuery] = useState('')
-  const [editing,setEditing] = useState(null)
-  const [error,setError] = useState(null)
+export default function Products() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
-  async function load(){
-    try{
-      const res = await api.get('/products/')
-      setProducts(res.data)
-    } catch(err){
-      setError('Erro ao carregar produtos')
+  async function load() {
+    setLoading(true);
+    try {
+      const res = await api.get('/products/');
+      setProducts(res.data);
+      setFilteredProducts(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   }
 
-  useEffect(()=>{ load() },[])
+  useEffect(() => { load(); }, []);
 
-  async function search(e){
-    e.preventDefault()
-    try{
-      const res = await api.get(`/products/search/?q=${encodeURIComponent(query)}`)
-      setProducts(res.data)
-    } catch(err){
-      setError('Erro na busca')
-    }
-  }
-
-  async function remove(id){
-    if(!confirm('Deseja excluir este produto?')) return;
-    try{
-      await api.delete(`/products/${id}/`)
-      setProducts(products.filter(p=>p.id!==id))
-    } catch(err){
-      setError('Erro ao excluir')
-    }
+  function handleSearch(e) {
+    e.preventDefault();
+    const query = search.toLowerCase();
+    const filtered = products.filter(p => p.nome.toLowerCase().includes(query));
+    setFilteredProducts(filtered);
   }
 
   return (
-    <div>
-      <h2>Produtos</h2>
-      {error && <div style={{color:'red'}}>{error}</div>}
-      <form onSubmit={search}>
-        <input placeholder="buscar por nome ou SKU" value={query} onChange={e=>setQuery(e.target.value)} />
-        <button>Buscar</button>
-        <button type="button" onClick={()=>{setQuery(''); load()}}>Limpar</button>
-      </form>
+    <>
+      <Header />
+      <div className={styles.container}>
+        <h1>Produtos Cadastrados</h1>
 
-      <button onClick={()=>setEditing({})}>Novo Produto</button>
+        {/* busca de produtos */}
+        <form onSubmit={handleSearch} className={styles.searchForm}>
+          <input
+            type="text"
+            placeholder="Buscar produto pelo nome..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.searchInput}
+          />
+          <button type="submit" className={styles.searchButton}>Buscar</button>
+        </form>
 
-      <table border="1" cellPadding="6" style={{marginTop:10}}>
-        <thead><tr><th>SKU</th><th>Nome</th><th>Qtd</th><th>Qtd Mín</th><th>Ações</th></tr></thead>
-        <tbody>
-          {products.map(p=>(
-            <tr key={p.id}>
-              <td>{p.sku}</td>
-              <td>{p.name}</td>
-              <td>{p.quantity}</td>
-              <td>{p.minimum_quantity}</td>
-              <td>
-                <button onClick={()=>setEditing(p)}>Editar</button>
-                <button onClick={()=>remove(p.id)}>Excluir</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <div className={styles.adicionar}>
+          <button onClick={() => { setEditing(null); setShowForm(true); }}>Adicionar Produto</button>
+        </div>
 
-      {editing && <ProductForm product={editing} onDone={(saved)=>{ setEditing(null); load() }} onCancel={()=>setEditing(null)} />}
-    </div>
-  )
+        {showForm && (
+          <div className={styles.formWrapper}>
+            <ProductForm initial={editing} onSaved={() => { setShowForm(false); load(); }} />
+          </div>
+        )}
+
+        {loading ? <div>os produtos estão carregando.</div> : (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Estoque</th>
+                <th>Min</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map(p => (
+                <tr key={p.id_produto}>
+                  <td>{p.nome}</td>
+                  <td>{p.estoque_atual}</td>
+                  <td>{p.estoque_min}</td>
+                  <td>
+                    <button onClick={() => { setEditing(p); setShowForm(true); }}>Editar</button>
+                    <button onClick={async () => {
+                      if (!confirm('Excluir?')) return;
+                      await api.delete(`/products/${p.id_produto}/`);
+                      load();
+                    }}>Excluir</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </>
+  );
 }

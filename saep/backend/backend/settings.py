@@ -3,22 +3,18 @@ import pymysql
 from pathlib import Path
 from datetime import timedelta
 
-# Necessário para substituir MySQLdb → PyMySQL
+#substituir MySQLdb → PyMySQL
 pymysql.install_as_MySQLdb()
 
 # Caminho base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ===========================
-#  DJANGO CORE SETTINGS
-# ===========================
+
+#DJANGO CORE SETTINGS
 SECRET_KEY = 'django-insecure-h7#2@!w92_+t@dfg6zh!y8j3k9%0xsu1q3p!9w0#rs(1m$)v-1'
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
-# ===========================
-#  INSTALLED APPS
-# ===========================
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -32,9 +28,7 @@ INSTALLED_APPS = [
     "api",
 ]
 
-# ===========================
-#  MIDDLEWARE
-# ===========================
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -53,9 +47,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "backend.urls"
 
-# ===========================
-#  TEMPLATES
-# ===========================
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -73,26 +64,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
-# ===========================
-#  DATABASE (MySQL + fallback SQLite)
-# ===========================
+#banco é o database MySQL
 DB_ENGINE = os.environ.get("DB_ENGINE", "mysql").lower()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'saep_db',#saep_db     # conforme requisito
+        'NAME': 'saep_db',#saep_db
         'USER': 'root',
-        'PASSWORD': 'kamila123',#senai
+        'PASSWORD': 'senai',#senai #kamila123
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
 }
 
-# ===========================
-#  PASSWORD VALIDATION
-# ===========================
+#validacao de senha
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -100,25 +87,19 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ===========================
-#  INTERNATIONALIZATION
-# ===========================
+
 LANGUAGE_CODE = "pt-br"
 TIME_ZONE = "America/Sao_Paulo"
 USE_I18N = True
 USE_TZ = True
 
-# ===========================
-#  STATIC FILES
-# ===========================
+#STATIC FILES
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ===========================
-#  REST FRAMEWORK / JWT
-# ===========================
+#REST FRAMEWORK / JWT
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
